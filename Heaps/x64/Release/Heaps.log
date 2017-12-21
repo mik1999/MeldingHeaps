@@ -1,0 +1,3 @@
+﻿  MeldingHeaps.cpp
+MeldingHeaps.cpp(9): warning C4630: MeldingHeaps<T>::~MeldingHeaps: недопустимый спецификатор класса хранения "extern" для определения члена
+MeldingHeaps.cpp(9): error C2447: {: отсутствует заголовок функции (возможно, используется формальный список старого типа)

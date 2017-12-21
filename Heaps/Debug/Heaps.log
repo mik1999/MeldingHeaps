@@ -1,0 +1,86 @@
+﻿  Source.cpp
+c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(34): error C2248: LeftistNode<T>::right_: невозможно обратиться к private член, объявленному в классе "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(11): note:  см. объявление "LeftistNode<T>::right_"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(28): note:  см. объявление "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(53): note: выполняется компиляция ссылки на экземпляр шаблон функции "LeftistNode<T> *meld<T>(LeftistNode<T> *,LeftistNode<T> *)"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(51): note: при компиляции функции-члена "<Нет данных>" класса класс <Нет данных>
+  c:\мфти\programs\homework5\heaps\heaps\source.cpp(5): note: выполняется компиляция ссылки на экземпляр шаблон класс "LeftistHeap<int>"
+c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(36): error C2872: rank: неоднозначный символ
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(41): note: может быть "int rank(LeftistNode<T> *)"
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\type_traits(1247): note: или       "std::rank"
+c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(36): error C2248: LeftistNode<T>::left_: невозможно обратиться к private член, объявленному в классе "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(11): note:  см. объявление "LeftistNode<T>::left_"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(28): note:  см. объявление "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(36): error C2248: LeftistNode<T>::right_: невозможно обратиться к private член, объявленному в классе "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(11): note:  см. объявление "LeftistNode<T>::right_"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(28): note:  см. объявление "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(37): error C2248: LeftistNode<T>::left_: невозможно обратиться к private член, объявленному в классе "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(11): note:  см. объявление "LeftistNode<T>::left_"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(28): note:  см. объявление "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+c:\мфти\programs\homework5\heaps\heaps\leftistheap.cpp(37): error C2248: LeftistNode<T>::right_: невозможно обратиться к private член, объявленному в классе "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(11): note:  см. объявление "LeftistNode<T>::right_"
+          with
+          [
+              T=int
+          ]
+  c:\мфти\programs\homework5\heaps\heaps\leftistheap.h(28): note:  см. объявление "LeftistNode<T>"
+          with
+          [
+              T=int
+          ]

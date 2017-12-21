@@ -1,0 +1,4 @@
+﻿  test.cpp
+test.cpp(102): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+test.cpp(159): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  GTest.vcxproj -> C:\МФТИ\programs\HomeWork5\Heaps\x64\Debug\GTest.exe

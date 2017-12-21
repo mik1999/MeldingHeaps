@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GtaTestDurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Executable>C:\МФТИ\programs\HomeWork5\Heaps\x64\Debug\GTest.exe</Executable>
+  <TestDurations>
+    <TestDuration Test="TestCaseName.TestName" Duration="1" />
+    <TestDuration Test="ConstSizeTest.Test1" Duration="3" />
+    <TestDuration Test="SomeTestCase.SomeTest" Duration="1" />
+    <TestDuration Test="ConstSizeTest.Test2" Duration="60" />
+    <TestDuration Test="ConstSizeTest.Test3" Duration="1297" />
+    <TestDuration Test="ConstSizeTest.Test4" Duration="39084" />
+    <TestDuration Test="ConstSizeTest.Test5" Duration="11270" />
+  </TestDurations>
+</GtaTestDurations>
