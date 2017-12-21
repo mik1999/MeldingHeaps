@@ -4,426 +4,240 @@
 #include <cmath>
 #include <ctime>
 #include <algorithm>
+#include <iostream>
 
 TEST(TestCaseName, TestName) {
   EXPECT_EQ(1, 1);
   EXPECT_TRUE(true);
 }
 
-enum testCases {
-	Tinsert,
-	Textract,
-	Tmeld,
-	Tgetmin,
-	Tadd,
-	Tsize
+class Action {
+private:
+	friend istream & operator >>(istream& in, Action& num);
+	friend ostream& operator <<(ostream& out, const Action& num);
+	int key;
+	size_t index1, index2;
+public:
+	enum Type {
+		TaddHeap,
+		Tinsert,
+		TextractMin,
+		Tmeld,
+		TgetMin,
+		Tsize
+	};
+	Type type;
+	template <class MHeap>
+	int operator ()(MHeap& heap) {
+		switch (type) {
+		case TaddHeap:
+			heap.addHeap(key);
+			return 0;
+		case Tinsert:
+			heap.insert(index1, key);
+			return 0;
+		case TextractMin:
+			heap.extractMin(index1);
+			return 0;
+		case Tmeld:
+			heap.meld(index1, index2);
+			return 0;
+		case TgetMin:
+			return heap.getMin(index1);
+		default:
+			break;
+		}
+		return -1;
+	}
+	Action() {}
+	Action(Type type, int key, size_t index1, size_t index2): type(type), key(key), index1(index1), index2(index2) {
+	}
 };
 
-void print(int t) {
-	EXPECT_TRUE(false) << t;
-}
-
-void InteractiveTest(long long temps) {
-	MeldingHeaps <STDHeap<int>, int> Mheap0;
-	MeldingHeaps <SkewHeap<int>, int> Mheap1;
-	MeldingHeaps <LeftistHeap<int>, int> Mheap2;
-	MeldingHeaps <BinomialHeap<int>, int> Mheap3;
-	const long long size = (long long)sqrt(temps);
-	for (long long i = 0; i < size; i++) {
+vector <Action> GenTest (int temps, int deep, int size, int maxSize){
+	srand(time(NULL));
+	vector <Action> ans;
+	MeldingHeaps <STDHeap <int>, int> heap;
+	for (int i = 0; i < size; i++) {
 		int key = rand();
-		Mheap0.addHeap(key);
-		Mheap1.addHeap(key);
-		Mheap2.addHeap(key);
-		Mheap3.addHeap(key);
+		heap.addHeap(key);
+		ans.push_back(Action(Action::TaddHeap, key, 0, 0));
 	}
-	for (long long i = 0; i < temps; i++) {
-		int k = rand() % Tsize, key = rand();
-		size_t index = rand() % size, index2 = rand() % size;
-		switch (k) {
-		case Tinsert:
-			Mheap0.insert(index, key);
-			Mheap1.insert(index, key);
-			Mheap2.insert(index, key);
-			Mheap3.insert(index, key);
-			break;
-		case Textract:
-			if (Mheap0.empty(index))
-				break;
-			Mheap0.extractMin(index);
-			Mheap1.extractMin(index);
-			Mheap2.extractMin(index);
-			Mheap3.extractMin(index);
-			break;
-		case Tmeld:
-			if (index == index2)
-				break;
-			Mheap0.meld(index, index2);
-			Mheap1.meld(index, index2);
-			Mheap2.meld(index, index2);
-			Mheap3.meld(index, index2);
-			break;
-		default:
-			break;
-		}
-		for (index = 0; (int)index < size; index++) {
-			if (Mheap0.empty(index))
-				continue;
-			ASSERT_EQ(Mheap0.getMin(index), Mheap1.getMin(index)) << "MHeaps 0 & 1";
-			ASSERT_EQ(Mheap0.getMin(index), Mheap2.getMin(index)) << "MHeaps 0 & 2";
-			ASSERT_EQ(Mheap0.getMin(index), Mheap3.getMin(index)) << "MHeaps 0 & 3";
-		}
-	}
-	ASSERT_TRUE(Mheap0 == Mheap1);
-	ASSERT_TRUE(Mheap0 == Mheap2);
-	ASSERT_TRUE(Mheap0 == Mheap3);
-}
-
-TEST(ConstSizeTest, Test1) {
-	InteractiveTest(100);
-}
-
-TEST(ConstSizeTest, Test2) {
-	InteractiveTest(1000);
-}
-
-TEST(ConstSizeTest, Test3) {
-	InteractiveTest(10000);
-}
-
-TEST(ConstSizeTest, Test4) {
-	InteractiveTest(100000);
-}
-
-int numOfTests = 0;
-
-const string DirectName = "C:/myFavoriteUniversity/myFavoriteSubject/";
-
-void GenTest1(long long numOfOper, int size, int maxSize) {
-	srand(time(NULL));
-	numOfTests++;
-	std::ofstream out(DirectName + "Test" + to_string(numOfTests) + ".txt");
-	MeldingHeaps <STDHeap <int>, int> heap;
-	out << size << "\n";
-	for (int i = 0; i < size; i++) {
-		int k = rand();
-		heap.addHeap(k);
-		out << k << ' ';
-	}
-	out << "\n";
-	for (long long i = 0; i < numOfOper; i++) {
-		int k = rand() % Tsize, key = rand(), index = rand() % size, index2 = rand() % size;
-		switch (k) {
-		case Tinsert:
-			heap.insert(index, key);
-			out << k << ' ' << index << ' ' << key << '\n';
-			break;
-		case Textract:
-			if (heap.empty(index)) {
-				i--;
-				break;
-			}
-			heap.extractMin(index);
-			out << k << ' ' << index << '\n';
-			break;
-		case Tmeld:
-			if (index == index2) {
-				i--;
-				break;
-			}
-			heap.meld(index, index2);
-			out << k << ' ' << index << ' ' << index2 << '\n';
-			break;
-		case Tgetmin:
-			if (heap.empty(index)) {
-				i--;
-				break;
-			}
-			out << k << ' ' << index << '\n';
-			break;
-		case Tadd:
-			if (size < maxSize) {
-				size++;
-				heap.addHeap(key);
-				out << k << ' ' << key << '\n';
-			}
-			else
-				i--;
-			break;
-		default:
-			break;
-		}
-	}
-}
-
-void GenTest2(long long numOfOper, int deep, int size, int maxSize) {
-	srand(time(NULL));
-	numOfTests++;
-	std::ofstream out(DirectName + "Test" + to_string(numOfTests) + ".txt");
-	MeldingHeaps <STDHeap <int>, int> heap;
-	out << size << "\n";
-	for (int i = 0; i < size; i++) {
-		int k = rand();
-		heap.addHeap(k);
-		out << k << ' ';
-	}
-	out << "\n";
-	for (long long i = 0; i < numOfOper; i++) {
-		int key = rand(), index = rand() % size, index2 = rand() % size;
-		int k;
+	for (; (int)ans.size() < temps;) {
 		if (rand() % 2) {
-			if (rand() % 3)
-				k = Tgetmin;
-			else if (rand() % 2)
-				k = Tmeld;
-			else
-				k = Tadd;
-		}
-		else {
-			if (i % (2 * deep) < deep) {
-				if (rand() % 10)
-					k = Textract;
-				else
-					k = Tinsert;
+			if (rand() % 3) {
+				int index1 = rand() % size, index2 = rand() % size;
+				if (index1 == index2)
+					continue;
+				ans.push_back(Action(Action::Tmeld, 0, index1, index2));
+			}
+			else if (rand() % 2) {
+				int index1 = rand() % size;
+				if (heap.empty(index1))
+					continue;
+				ans.push_back(Action(Action::TgetMin, 0, index1, 0));
 			}
 			else {
-				if (rand() % 10)
-					k = Tinsert;
-				else
-					k = Textract;
-			}
-		}
-		switch (k) {
-		case Tinsert:
-			heap.insert(index, key);
-			out << k << ' ' << index << ' ' << key << '\n';
-			break;
-		case Textract:
-			if (heap.empty(index)) {
-				i--;
-				break;
-			}
-			heap.extractMin(index);
-			out << k << ' ' << index << '\n';
-			break;
-		case Tmeld:
-			if (index == index2) {
-				i--;
-				break;
-			}
-			heap.meld(index, index2);
-			out << k << ' ' << index << ' ' << index2 << '\n';
-			break;
-		case Tgetmin:
-			if (heap.empty(index)) {
-				i--;
-				break;
-			}
-			out << k << ' ' << index << '\n';
-			break;
-		case Tadd:
-			if (size < maxSize) {
+				if (size == maxSize)
+					continue;
+				ans.push_back(Action(Action::TaddHeap, rand(), 0, 0));
 				size++;
-				heap.addHeap(key);
-				out << k << ' ' << key << '\n';
 			}
-			else
-				i--;
-			break;
-		default:
-			break;
 		}
+		else {
+			if (ans.size() % (2 * deep) < deep) {
+				if (rand() % 10) {
+					int index = rand() % size;
+					if (heap.empty(index))
+						continue;
+					ans.push_back(Action(Action::TextractMin, 0, index, 0));
+				}
+				else {
+					ans.push_back(Action(Action::Tinsert, rand(), rand() % size, 0));
+				}
+			}
+			else {
+				if (rand() % 10) {
+					ans.push_back(Action(Action::Tinsert, rand(), rand() % size, 0));
+				}
+				else {
+					int index = rand() % size;
+					if (heap.empty(index))
+						continue;
+					ans.push_back(Action(Action::TextractMin, 0, index, 0));
+				}
+			}
+		}
+		ans.back()(heap);
 	}
+	return ans;
 }
 
-const int MaxTestNum = 4 * 10;
-
-void makeTests() {
-	for (int i = 1; i <= MaxTestNum / 4; i++)
-		GenTest1(100, 10000, 20000);
-	for (int i = 1; i <= MaxTestNum / 4; i++)
-		GenTest1(1000, 100, 300);
-	for (int i = 1; i <= MaxTestNum / 4; i++)
-		GenTest2(100, 30, 1000, 2000);
-	for (int i = 1; i <= MaxTestNum / 4; i++)
-		GenTest2(i * 100000, 4000, 10000, 30000);
+istream& operator >>(istream& in, Action& num) {
+	int type;
+	in >> type >> num.key >> num.index1 >> num.index2;
+	num.type = static_cast<Action::Type> (type);
+	return in;
 }
 
-template <class Heap>
-void RunTest(int testNum) {
-	cout << "Test " << testNum << " is running.\n";
-	std::ifstream in(DirectName + "Test" + to_string(testNum) + ".txt");
-	MeldingHeaps <STDHeap<int>, int> Mheap0;
-	MeldingHeaps <Heap, int> Mheap1;
-	int size;
-	in.tie(NULL);
-	in >> size;
-	for (long long i = 0; i < size; i++) {
-		int key;
-		in >> key;
-		Mheap0.addHeap(key);
-		Mheap1.addHeap(key);
-	}
-	while (true) {
-		int k, key;
-		size_t index, index2;
-		if (!(in >> k))
-			break;
-		switch (k) {
-		case Tinsert:
-			in >> index >> key;
-			Mheap0.insert(index, key);
-			Mheap1.insert(index, key);
-			break;
-		case Textract:
-			in >> index;
-			Mheap0.extractMin(index);
-			Mheap1.extractMin(index);
-			break;
-		case Tmeld:
-			in >> index >> index2;
-			Mheap0.meld(index, index2);
-			Mheap1.meld(index, index2);
-			break;
-		case Tgetmin:
-			in >> index;
-			ASSERT_EQ(Mheap0.getMin(index), Mheap1.getMin(index));
-			break;
-		case Tadd:
-			in >> key;
-			Mheap0.addHeap(key);
-			Mheap1.addHeap(key);
-			break;
-		default:
-			break;
-		}
-		for (index = 0; (int)index < size; index++) {
-			if (Mheap0.empty(index))
-				continue;
-			ASSERT_EQ(Mheap0.getMin(index), Mheap1.getMin(index)) << "MHeaps 0 & 1";
-		}
-	}
-	ASSERT_TRUE(Mheap0 == Mheap1);
+ostream& operator <<(ostream& out, const Action& num) {
+	out << num.type << ' ' << num.key << ' ' << num.index1 << ' ' << num.index2 << '\n';
+	return out;
 }
 
-template <class Heap>
-void TimeTest(int testNum, string HeapName) {
-	cout << "Test " << testNum << "is running.\n";
-	std::ifstream in(DirectName + "Test" + to_string(testNum) + ".txt");
-	MeldingHeaps <Heap, int> Mheap;
-	int size;
-	in.tie(NULL);
-	in >> size;
-	time_t begin = clock();
-	for (long long i = 0; i < size; i++) {
-		int key;
-		in >> key;
-		Mheap.addHeap(key);
-	}
-	int numOfOperations = 0;
-	while (true) {
-		int k, key;
-		size_t index, index2;
-		if (!(in >> k))
-			break;
-		numOfOperations++;
-		switch (k) {
-		case Tinsert:
-			in >> index >> key;
-			Mheap.insert(index, key);
-			break;
-		case Textract:
-			in >> index;
-			Mheap.extractMin(index);
-			break;
-		case Tmeld:
-			in >> index >> index2;
-			Mheap.meld(index, index2);
-			break;
-		case Tgetmin:
-			in >> index;
-			Mheap.getMin(index);
-			break;
-		case Tadd:
-			in >> key;
-			Mheap.addHeap(key);
-			break;
-		default:
-			break;
-		}
-	}
-	std::ofstream out(DirectName + HeapName + "test.txt", std::ios::in);
-	out.seekp(0, std::ios::end);
-	out << testNum << ' ' << numOfOperations << ' ' << (clock() - begin) * 1000 / CLOCKS_PER_SEC << endl;
+const int CountOfTests = 40;
+const string DirectName = "C:/mik/tests/";
+
+void WriteTest(int numOfTest, int temps, int deep, int size, int maxSize) {
+	std::ofstream out(DirectName + "Test" + to_string(numOfTest) + ".txt");
+	out << temps + size << '\n';
+	vector <Action> v = GenTest(temps, deep, size, maxSize);
+	for (size_t k = 0; k < v.size(); k++)
+		out << v[k];
 	out.close();
 }
 
-TEST(SkewHeapTest, simpleTest) {
-	for (int i = 0; i < MaxTestNum / 4; i++)
-		RunTest <SkewHeap<int> >(i);
-	ASSERT_TRUE(true);
+void makeTests(){
+	int i = 1;
+	for (int j = 0; j < CountOfTests / 4; j++, i++)
+		WriteTest(i, 10000, 10, 10, 20);
+	for (int j = 0; j < CountOfTests / 4; j++, i++)
+		WriteTest(i, 1000, 100, 100, 200);
+	for (int j = 0; j < CountOfTests / 4; j++, i++)
+		WriteTest(i, 10000, 100, 1000, 2000);
+	for (int j = 0; j < CountOfTests / 4; j++, i++)
+		WriteTest(i, i * 10000, 1000, 100, 200);
 }
 
-TEST(SkewHeapTest, simpleTestStress) {
-	for (int i = MaxTestNum / 4; i < MaxTestNum / 2; i++)
-		RunTest <SkewHeap<int> >(i);
-	ASSERT_TRUE(true);
+template <class MHeap>
+void RunTest(int numOfTest) {
+	std::ifstream in(DirectName + "Test" + to_string(numOfTest) + ".txt");
+	int temps;
+	in >> temps;
+	MeldingHeaps <STDHeap <int>, int> heap1;
+	MHeap heap2;
+	for (int i = 0; i < temps; i++) {
+		Action a;
+		in >> a;
+		ASSERT_EQ(a(heap1), a(heap2));
+	}
 }
 
-TEST(SkewHeapTest, hardTest) {
-	for (int i = MaxTestNum / 2; i < 3 * MaxTestNum / 4; i++)
-		RunTest <SkewHeap<int> >(i);
-	ASSERT_TRUE(true);
+template <class MHeap>
+void TimeTest(int numOfTest, string MHeapName) {
+	std::ifstream in(DirectName + "Test" + to_string(numOfTest) + ".txt");
+	time_t begin = clock();
+	int temps;
+	in >> temps;
+	MHeap heap2;
+	for (int i = 0; i < temps; i++) {
+		Action a;
+		in >> a;
+		a(heap2);
+	}
+	std::ofstream out(DirectName + "Test" + to_string(numOfTest) + ".txt", std::ios::in);
+	out.seekp(0, std::ios::end);
+	out << MHeapName << " testing: " << numOfTest << ' ' << temps << ' ' << (clock() - begin) * 1000 / CLOCKS_PER_SEC << '\n';
+	out.close();
 }
 
-TEST(LeftistHeapTest, simpleTest) {
-	for (int i = 0; i < MaxTestNum / 4; i++)
-		RunTest <LeftistHeap<int> >(i);
-	ASSERT_TRUE(true);
+TEST(SkewTest, Test1) {
+	for (int i = 1; i <= CountOfTests / 4; i++)
+		RunTest<MeldingHeaps<SkewHeap<int>, int> >(i);
 }
 
-TEST(LeftistHeapTest, simpleTestStress) {
-	for (int i = MaxTestNum / 4; i < MaxTestNum / 2; i++)
-		RunTest <LeftistHeap<int> >(i);
-	ASSERT_TRUE(true);
+TEST(SkewTest, Test2) {
+	for (int i = CountOfTests / 4 + 1; i <= CountOfTests / 2; i++)
+		RunTest<MeldingHeaps<SkewHeap<int>, int> >(i);
 }
 
-TEST(LeftistHeapTest, hardTest) {
-	for (int i = MaxTestNum / 2; i < 3 * MaxTestNum / 4; i++)
-		RunTest <LeftistHeap<int> >(i);
-	ASSERT_TRUE(true);
+TEST(SkewTest, Test3) {
+	for (int i = CountOfTests / 2 + 1; i <= 3 * CountOfTests / 4; i++)
+		RunTest<MeldingHeaps<SkewHeap<int>, int> >(i);
 }
 
-TEST(BinomialHeapTest, simpleTest) {
-	for (int i = 0; i < MaxTestNum / 4; i++)
-		RunTest <BinomialHeap<int> >(i);
-	ASSERT_TRUE(true);
+TEST(LeftistTest, Test1) {
+	for (int i = 1; i <= CountOfTests / 4; i++)
+		RunTest<MeldingHeaps<LeftistHeap<int>, int> >(i);
 }
 
-TEST(BinomialHeapTest, simpleTestStress) {
-	for (int i = MaxTestNum / 4; i < MaxTestNum / 2; i++)
-		RunTest <BinomialHeap<int> >(i);
-	ASSERT_TRUE(true);
+TEST(LeftistTest, Test2) {
+	for (int i = CountOfTests / 4 + 1; i <= CountOfTests / 2; i++)
+		RunTest<MeldingHeaps<LeftistHeap<int>, int> >(i);
 }
 
-TEST(BinomialHeapTest, hardTest) {
-	for (int i = MaxTestNum / 2; i < 3 * MaxTestNum / 4; i++)
-		RunTest <BinomialHeap<int> >(i);
-	ASSERT_TRUE(true);
+TEST(LeftistTest, Test3) {
+	for (int i = CountOfTests / 2 + 1; i <= 3 * CountOfTests / 4; i++)
+		RunTest<MeldingHeaps<LeftistHeap<int>, int> >(i);
+}
+
+TEST(BinomialTest, Test1) {
+	for (int i = 1; i <= CountOfTests / 4; i++)
+		RunTest<MeldingHeaps<BinomialHeap<int>, int> >(i);
+}
+
+TEST(BinomialTest, Test2) {
+	for (int i = CountOfTests / 4 + 1; i <= CountOfTests / 2; i++)
+		RunTest<MeldingHeaps<BinomialHeap<int>, int> >(i);
+}
+
+TEST(BinomialTest, Test3) {
+	for (int i = CountOfTests / 2 + 1; i <= 3 * CountOfTests / 4; i++)
+		RunTest<MeldingHeaps<BinomialHeap<int>, int> >(i);
 }
 
 TEST(TimeTest, MainTest) {
-	for (int i = 3 * MaxTestNum / 4; i < MaxTestNum; i++)
-		TimeTest <SkewHeap<int> >(i, "SkewHeap");
-	for (int i = 3 * MaxTestNum / 4; i < MaxTestNum; i++)
-		TimeTest <LeftistHeap<int> >(i, "LeftistHeap");
-	for (int i = 3 * MaxTestNum / 4; i < MaxTestNum; i++)
-		TimeTest <BinomialHeap<int> >(i, "BinomialHeap");
-	ASSERT_TRUE(true);
+	for (int i = 3 * CountOfTests / 4 + 1; i <= CountOfTests; i++)
+		TimeTest<MeldingHeaps<BinomialHeap<int>, int> >(i, "BinomialHeap");
+	for (int i = 3 * CountOfTests / 4 + 1; i <= CountOfTests; i++)
+		TimeTest<MeldingHeaps<LeftistHeap<int>, int> >(i, "LeftistHeap");
+	for (int i = 3 * CountOfTests / 4 + 1; i <= CountOfTests; i++)
+		TimeTest<MeldingHeaps<SkewHeap<int>, int> >(i, "SkewHeap");
 }
-
 
 int main(int argc, char** argv) {
 	ios_base::sync_with_stdio(false);
+	//makeTests();
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
