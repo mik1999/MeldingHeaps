@@ -353,7 +353,7 @@ void TimeTest(int testNum, string HeapName) {
 	}
 	std::ofstream out(DirectName + HeapName + "test.txt", std::ios::in);
 	out.seekp(0, std::ios::end);
-	cout << testNum << ' ' << numOfOperations << ' ' << (clock() - begin) * 1000 / CLOCKS_PER_SEC << endl;
+	out << testNum << ' ' << numOfOperations << ' ' << (clock() - begin) * 1000 / CLOCKS_PER_SEC << endl;
 	out.close();
 }
 
